@@ -34,7 +34,7 @@ function showCountriesList(resp) {
             alpha3CodeLow = alpha3Code.toLowerCase(),
             flagLink = "https://restcountries.eu/data/" + alpha3CodeLow + '.svg',
             img = $('<img>').attr('src', flagLink).attr('width', 180).attr('height', 110),
-            h1 = $('<h1>').text(item.name);
+            h1 = $('<h2>').text(item.name);
 
         $('<tr>').appendTo(myTable).append(img).append(h1).addClass('country');
         $('<thead>').text('Background Information :').appendTo(myTable).addClass('header');
