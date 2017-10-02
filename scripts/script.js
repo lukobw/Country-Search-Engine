@@ -37,7 +37,7 @@ function showCountriesList(resp) {
             h1 = $('<h2>').text(item.name);
 
         $('<tr>').appendTo(myTable).append(img).append(h1).addClass('country');
-        $('<thead>').text('Background Information :').appendTo(myTable).addClass('header');
+        $('<thead>').text('Background Information:').appendTo(myTable).addClass('header');
 
         createRow('Capital City', item.capital).appendTo(myTable);
         createRow('Currency', item.currencies[0].name + '; ' + item.currencies[0].symbol).appendTo(myTable);
