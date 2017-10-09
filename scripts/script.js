@@ -45,7 +45,7 @@ function showCountriesList(resp) {
         createRow('Area', item.area + ' km2').appendTo(myTable);
         createRow('Borders', item.borders).appendTo(myTable);
         createRow('Region', item.region).appendTo(myTable);
-        createRow('Population', item.population + ' thousands').appendTo(myTable);
+        createRow('Population', ('~ ' + Math.ceil(item.population/1000000) + ' mln')).appendTo(myTable);
         $('<tfoot>').appendTo(myTable);
     });
 }
