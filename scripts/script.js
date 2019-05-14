@@ -1,51 +1,65 @@
-var url = 'https://restcountries.eu/rest/v2/name/';
-var myTable = $('#myTable');
+var Country = Country || {};
 
-$('#search').click(searchCountries);
-$('#country-names').on('keypress', function (e) {
-    if (e.keyCode == 13) {
-        searchCountries();
-    }
-});
-
-function searchCountries() {
-    var countryName = $('#country-names').val();
-
-    if (!countryName.length) {
-        countryName = 'Poland';
-    }
-    $.ajax({
-        url: url + countryName,
-        method: 'GET',
-        success: showCountriesList
+Country.SearchEngine = new function() {
+    
+    $('#search').click(function() {
+        Country.SearchEngine.searchCountries();
     });
-}
 
-function createRow(key, value) {
-    return $('<tr>').html(`<td> ${key} </td><td> : ${value} </td>`);
-}
-
-function showCountriesList(resp) {
-    myTable.empty();
-
-    resp.forEach(function (item) {
-
-        var alpha3Code = item.alpha3Code,
-            alpha3CodeLow = alpha3Code.toLowerCase(),
-            flagLink = "https://restcountries.eu/data/" + alpha3CodeLow + '.svg',
-            img = $('<img>').attr('src', flagLink).attr('width', 180).attr('height', 110),
-            h1 = $('<h2>').text(item.name);
-
-        $('<tr>').appendTo(myTable).append(img).append(h1).addClass('country');
-        $('<thead>').text('Background Information:').appendTo(myTable).addClass('header');
-
-        createRow('Capital City', item.capital).appendTo(myTable);
-        createRow('Currency', item.currencies[0].name + '; ' + item.currencies[0].symbol).appendTo(myTable);
-        createRow('Country Code', item.alpha2Code).appendTo(myTable);
-        createRow('Area', item.area + ' km2').appendTo(myTable);
-        createRow('Borders', item.borders).appendTo(myTable);
-        createRow('Region', item.region).appendTo(myTable);
-        createRow('Population', ('~ ' + Math.ceil(item.population/1000000) + ' mln')).appendTo(myTable);
-        $('<tfoot>').appendTo(myTable);
+    $('#country-names').on('keypress', function(e) {
+        if (e.keyCode === 13) {
+            Country.SearchEngine.searchCountries();
+        }
     });
-}
+
+    this.searchCountries = function() {
+        
+        let countryName = $('#country-names').val(),
+            url = 'https://restcountries.eu/rest/v2/name/';
+
+        if (!countryName.length) {
+            countryName = 'Poland';
+        }
+        
+        $.ajax({
+            url: url + countryName,
+            method: 'GET'
+        })
+        .done(Country.SearchEngine.showCountriesList)
+        .fail(function() {
+            console.log('Error occurred');
+        });
+    };
+
+    this.createRow = function(key, value) {
+        return $('<tr>').html(`<td>${key}</td><td>${value}</td>`);
+    };
+    
+    this.showCountriesList = function(resp) {
+        let myTable = $('#myTable');
+        
+        myTable.empty();
+
+        resp.forEach(function (item) {
+
+            let alpha3Code = item.alpha3Code,
+                alpha3CodeLow = alpha3Code.toLowerCase(),
+                flagLink = "https://restcountries.eu/data/" + alpha3CodeLow + '.svg',
+                img = $(`<img src="${flagLink}" alt="${alpha3CodeLow}">`),
+                h2 = $('<h2>').text(item.name);
+
+            $('<tr>').appendTo(myTable).append(img).append(h2).addClass('country');
+            $('<thead>').appendTo(myTable).addClass('header');
+
+            Country.SearchEngine.createRow('Capital City', item.capital).appendTo(myTable);
+            Country.SearchEngine.createRow('Currency', item.currencies[0].name + '(' + item.currencies[0].symbol+ ')').appendTo(myTable);
+            Country.SearchEngine.createRow('Country Code', item.alpha2Code).appendTo(myTable);
+            Country.SearchEngine.createRow('Area', item.area + ' km<sup>2</sup>').appendTo(myTable);
+            Country.SearchEngine.createRow('Borders', item.borders).appendTo(myTable);
+            Country.SearchEngine.createRow('Region', item.region).appendTo(myTable);
+            Country.SearchEngine.createRow('Population', (Math.floor(item.population))).appendTo(myTable);
+            Country.SearchEngine.createRow('Time Zone', item.timezones).appendTo(myTable);
+            Country.SearchEngine.createRow('Language', item.languages[0].name).appendTo(myTable);
+        });
+    };
+};
