@@ -54,6 +54,7 @@ img {
   font-size: 28px;
 }
 .container {
+  margin: auto;
   padding: 10px;
   text-align: center;
 }
